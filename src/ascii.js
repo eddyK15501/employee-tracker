@@ -6,7 +6,7 @@ const asciiArt = () => {
     console.log(rendered);
     setTimeout(() => {
       console.clear();
-    }, 2000);
+    }, 1500);
   });
 };
 
