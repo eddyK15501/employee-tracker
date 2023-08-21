@@ -1,4 +1,4 @@
-// CommonJS import statements; inquirer@8.2.4, mysql2
+// CommonJS import statements
 const inquirer = require("inquirer");
 const asciiArt = require("./src/ascii");
 const index = require("./src/index");
@@ -19,7 +19,7 @@ const recallPrompt = () => {
 const promptInquirer = async () => {
   try {  
     const data = await inquirer.prompt({
-      name: "option",
+      name: "main",
       message: "What would you like to do?",
       type: "list",
       choices: [
@@ -29,6 +29,7 @@ const promptInquirer = async () => {
         "Add a department",
         "Add a role",
         "Add an employee",
+        "Delete a department",
         "Update an employee role",
         "Quit",
         /*
@@ -42,25 +43,27 @@ const promptInquirer = async () => {
       ]
     });
     
-    const { option } = data;
+    const { main } = data;
     
-    switch(option) {
+    switch(main) {
       case "View All Departments":
-        index.viewDepartments()
-        recallPrompt()
+        index.viewDepartments().then(recallPrompt)
         break;
       case "View All Roles":
-        index.viewRoles()
-        recallPrompt()
+        index.viewRoles().then(recallPrompt)
         break;
       case "View All Employees":
+        index.viewEmployees().then(recallPrompt)
         break;
       case "Add a department":
+        index.addDepartment().then(recallPrompt)
         break;
       case "Add a role":
         break;
       case "Add an employee":
         break;
+      case "Delete a department":
+        index.deleteDepartment().then(recallPrompt)
       case "Update an employee role":
         break;
       case "Quit":
@@ -68,7 +71,6 @@ const promptInquirer = async () => {
         process.exit(0)
         break;
     }
-
   } catch (err) {
     console.log(err)
   }
@@ -76,4 +78,4 @@ const promptInquirer = async () => {
 
 startTracker()
 
-module.exports = { promptInquirer }
+module.exports = recallPrompt
