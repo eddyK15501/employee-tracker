@@ -52,21 +52,42 @@ const addDepartment = async () => {
     }
 }
 
-// "Remove a department"
-const deleteDepartment = async () => {
+// "Add a role"
+const addRole = async () => {
     try {
-        viewDepartments()
+        const role = await inquirer.prompt({
+            name: "roleName",
+            type: "input",
+            message: "Title of the role:",
+            validate: (name) => {
+                return name ? true : console.log("Please enter a title for the role", false)
+            }
+        },
+        {
+
+        },
+        {
+
+        })
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+// "Remove a department"
+const removeDepartment = async () => {
+    try {
         const dept = await inquirer.prompt({
-            name: "deptDeleted",
+            name: "deptRemoved",
             type: "input",
             message: "Please select the id of the department to remove:",
             validate: (id) => {
                 return id ? true : console.log("Please enter an id of the department to remove:", false)
             }
         })
-        const { deptDeleted } = dept
+        const { deptRemoved } = dept
 
-        await pool.query(`DELETE FROM department where id = ?`, [deptDeleted])
+        await pool.query(`DELETE FROM department where id = ?`, [deptRemoved])
         return await viewDepartments()
     } catch (err) {
         console.log(err)
@@ -78,5 +99,5 @@ module.exports = {
     viewRoles,
     viewEmployees,
     addDepartment,
-    deleteDepartment
+    removeDepartment
 }
