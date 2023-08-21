@@ -42,11 +42,13 @@ const promptInquirer = async () => {
     switch(option) {
       case "View All Departments":
         break;
-      case "View ALL Roles":
+      case "View All Roles":
         break;
       case "View All Employees":
         break;
       case "Add a department":
+        break;
+      case "Add a role":
         break;
       case "Add an employee":
         break;
@@ -55,7 +57,7 @@ const promptInquirer = async () => {
       case "Quit":
         break;
     }
-    
+
   } catch (err) {
     console.log(err)
   }
