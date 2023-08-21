@@ -6,19 +6,24 @@ const pool = mysql.createPool({
     host: '127.0.0.1',
     user: 'root',
     password: '',
-    database: '',
+    database: 'employee_tracker_db',
 }).promise()
 
 // "View All Departments"
-const viewDepartments = () => {
-    let query = "SELECT * FROM department"
-    
-    pool.query(query, (err, result) => {
-        if (err) throw err
-        console.table(result)
-    })
+const viewDepartments = async () => {
+    const [rows] = await pool.query("SELECT * FROM department;")
+    console.table(rows)
+}
+
+// "View All Roles"
+const viewRoles = async () => {
+    let query = "SELECT * FROM role";
+
+    const [rows] = await pool.query(query)
+    console.table(rows)
 }
 
 module.exports = {
-    viewDepartments
+    viewDepartments,
+    viewRoles
 }

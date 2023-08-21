@@ -42,9 +42,17 @@ const promptInquirer = async () => {
     switch(option) {
       case "View All Departments":
         index.viewDepartments()
-        // viewDepartments()
+
+        setTimeout(() => {
+          promptInquirer()
+        }, 50)
         break;
       case "View All Roles":
+        index.viewRoles()
+
+        setTimeout(() => {
+          promptInquirer()
+        }, 50)
         break;
       case "View All Employees":
         break;
@@ -57,7 +65,7 @@ const promptInquirer = async () => {
       case "Update an employee role":
         break;
       case "Quit":
-        break;
+        return;
     }
 
   } catch (err) {
@@ -66,3 +74,5 @@ const promptInquirer = async () => {
 }
 
 startTracker()
+
+module.exports = { promptInquirer }
