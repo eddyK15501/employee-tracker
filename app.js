@@ -1,15 +1,7 @@
 // CommonJS import statements; inquirer@8.2.4, mysql2
 const inquirer = require("inquirer");
-const mysql = require("mysql2");
 const asciiArt = require("./src/ascii");
-
-// Create a connection pool with mysql2
-const pool = mysql.createPool({
-    host: '127.0.0.1',
-    user: 'root',
-    password: '',
-    database: '',
-}).promise()
+const index = require("./src/index");
 
 const startTracker = () => {
   asciiArt()
@@ -30,10 +22,18 @@ const promptInquirer = async () => {
         "View All Roles",
         "View All Employees",
         "Add a department",
-        "Add an employee",
         "Add a role",
+        "Add an employee",
         "Update an employee role",
-        "Quit"
+        "Quit",
+        /*
+          Extra Credit:
+          "Update employee managers"
+          "View employees by manager"
+          "View employees by department"
+          "Delete departments, roles, and employees"
+          "View total utilized budget of department (combined salaries of all employees in that department)"          
+        */
       ]
     });
     
@@ -41,6 +41,8 @@ const promptInquirer = async () => {
     
     switch(option) {
       case "View All Departments":
+        index.viewDepartments()
+        // viewDepartments()
         break;
       case "View All Roles":
         break;
