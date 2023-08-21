@@ -5,10 +5,15 @@ const index = require("./src/index");
 
 const startTracker = () => {
   asciiArt()
-
   setTimeout(() => {
     promptInquirer()
   }, 1550)
+}
+
+const recallPrompt = () => {
+  setTimeout(() => {
+    promptInquirer()
+  }, 500)
 }
 
 const promptInquirer = async () => {
@@ -42,17 +47,11 @@ const promptInquirer = async () => {
     switch(option) {
       case "View All Departments":
         index.viewDepartments()
-
-        setTimeout(() => {
-          promptInquirer()
-        }, 50)
+        recallPrompt()
         break;
       case "View All Roles":
         index.viewRoles()
-
-        setTimeout(() => {
-          promptInquirer()
-        }, 50)
+        recallPrompt()
         break;
       case "View All Employees":
         break;
@@ -65,7 +64,9 @@ const promptInquirer = async () => {
       case "Update an employee role":
         break;
       case "Quit":
-        return;
+        console.log("Goodbye!")
+        process.exit(0)
+        break;
     }
 
   } catch (err) {
