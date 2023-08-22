@@ -20,7 +20,11 @@ const viewDepartments = async () => {
 
 // "View All Roles"
 const viewRoles = async () => {
-  let query = "SELECT * FROM role;";
+  let query = `
+    SELECT *
+    FROM role
+    JOIN department ON role.department_id = department.id;
+  `;
 
   const [rows] = await pool.query(query);
   console.table(rows);
@@ -28,7 +32,12 @@ const viewRoles = async () => {
 
 // "View All Employees"
 const viewEmployees = async () => {
-  let query = "SELECT * FROM employee;";
+  let query = `
+    SELECT *
+    FROM employee
+    JOIN role ON employee.role_id = role.id
+    JOIN department ON role.department_id = department.id;
+  `;
 
   const [rows] = await pool.query(query);
   console.table(rows);
@@ -50,7 +59,7 @@ const addDepartment = async () => {
     const { deptAdded } = dept;
 
     await pool.query(`INSERT INTO department (name) VALUES (?)`, [deptAdded]);
-    return await viewDepartments();
+    return viewDepartments();
   } catch (err) {
     console.log(err);
   }
@@ -59,6 +68,9 @@ const addDepartment = async () => {
 // "Add a role"
 const addRole = async () => {
   try {
+    const [departments] = await pool.query(`SELECT * FROM department;`);
+    const deptName = departments.map((dept) => dept.name);
+
     const role = await inquirer.prompt([
       {
         name: "roleTitle",
@@ -81,21 +93,22 @@ const addRole = async () => {
         },
       },
       {
-        name: "roleDeptId",
-        type: "input",
-        message:
-          "What department is this role a part of? Please enter the id of the department:",
-        validate: (id) => {
-          return id
-            ? true
-            : console.log("Please enter a department id for the role:", false);
-        },
+        name: "roleDeptName",
+        type: "list",
+        message: "Which department does the role belongs to?",
+        choices: [...deptName]
       },
     ]);
-    const { roleTitle, roleSalary, roleDeptId } = role;
+    const { roleTitle, roleSalary, roleDeptName } = role;
 
-    await pool.query(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`, [roleTitle, roleSalary, roleDeptId])
-    return await viewRoles()
+    const selectedDept = departments.find(dept => dept.name === roleDeptName)
+    const roleDeptId = selectedDept.id
+
+    await pool.query(
+      `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`,
+      [roleTitle, roleSalary, roleDeptId]
+    );
+    return await viewRoles();
   } catch (err) {
     console.log(err);
   }
@@ -103,32 +116,92 @@ const addRole = async () => {
 
 // "Add an Employee"
 const addEmployee = async () => {
-    
-}
+  try {
+    const [roles] = await pool.query(`SELECT * FROM role;`)
+    const roleTitle = roles.map(role => role.title)
+
+    const [managers] = await pool.query(`SELECT * FROM employee;`)
+    const managerName = managers.map(name => `${name.first_name} ${name.last_name}`)
+
+    const employee = await inquirer.prompt([
+      {
+        name: "firstName",
+        type: "input",
+        message: "First name of the employee:",
+        validate: (first) => {
+          return first
+            ? true
+            : console.log("Please enter a first name of the employee", false);
+        },
+      },
+      {
+        name: "lastName",
+        type: "input",
+        message: "Last name of the employee:",
+        validate: (last) => {
+          return last
+            ? true
+            : console.log("Please enter a last name of the employee", false);
+        },
+      },
+      {
+        name: "employeeRole",
+        type: "list",
+        message: "What is the employee's role?",
+        choices: [...roleTitle]
+      },
+      {
+        name: "employeeManager",
+        type: "list",
+        message: "Who is the employee's manager?",
+        choices: [...managerName]
+      },
+    ]);
+    const { firstName, lastName, employeeRole, employeeManager } = employee
+
+
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 // "Remove a department"
 const removeDepartment = async () => {
   try {
+    const [departments] = await pool.query(`SELECT * FROM department;`);
+    const deptName = departments.map((dept) => dept.name);
+
     const dept = await inquirer.prompt({
       name: "deptRemoved",
-      type: "input",
-      message: "Please select the id of the department to remove:",
+      type: "list",
+      message: "Select a department to remove:",
+      choices: [...deptName],
       validate: (id) => {
         return id
           ? true
-          : console.log(
-              "Please enter an id of the department to remove:",
-              false
-            );
+          : console.log("Please select a department to remove:", false);
       },
     });
     const { deptRemoved } = dept;
 
-    await pool.query(`DELETE FROM department where id = ?`, [deptRemoved]);
+    await pool.query(`DELETE FROM department WHERE name = ?`, [deptRemoved]);
     return await viewDepartments();
   } catch (err) {
     console.log(err);
   }
+};
+
+// "View total utilized budget of department"
+const viewBudget = async () => {
+  const query = `
+    SELECT d.name AS department_name, SUM(r.salary) AS total_salary
+    FROM department d
+    JOIN role r ON d.id = r.department_id
+    JOIN employee e ON r.id = e.role_id
+    GROUP BY d.name;`;
+
+  const [result] = await pool.query(query);
+  console.table(result);
 };
 
 module.exports = {
@@ -137,5 +210,7 @@ module.exports = {
   viewEmployees,
   addDepartment,
   addRole,
+  addEmployee,
   removeDepartment,
+  viewBudget,
 };

@@ -36,6 +36,7 @@ const promptInquirer = async () => {
         "Remove a role",
         "Remove an employee",
         "Update an employee role",
+        "View total utilized budget of department",
         "Quit",
         /*
           Extra Credit:
@@ -66,24 +67,22 @@ const promptInquirer = async () => {
         index.addDepartment().then(recallPrompt)
         break;
       case "Add a role":
-        index.viewDepartments().then(index.viewRoles)
-        setTimeout(() => {
-          index.addRole().then(recallPrompt)
-        }, 500)
+        index.addRole().then(recallPrompt)
         break;
       case "Add an employee":
+        index.addEmployee().then(recallPrompt)
         break;
       case "Remove a department":
-        index.viewDepartments()
-        setTimeout(() => {
-          index.removeDepartment().then(recallPrompt)
-        }, 500)
+        index.removeDepartment().then(recallPrompt)
         break;
       case "Remove a role":
         break;
       case "Remove an employee":
         break;
       case "Update an employee role":
+        break;
+      case "View total utilized budget of department":
+        index.viewBudget().then(recallPrompt)
         break;
       case "Quit":
         console.log("Goodbye!")
