@@ -96,13 +96,13 @@ const addRole = async () => {
         name: "roleDeptName",
         type: "list",
         message: "Which department does the role belongs to?",
-        choices: [...deptName]
+        choices: [...deptName],
       },
     ]);
     const { roleTitle, roleSalary, roleDeptName } = role;
 
-    const selectedDept = departments.find(dept => dept.name === roleDeptName)
-    const roleDeptId = selectedDept.id
+    const selectedDept = departments.find((dept) => dept.name === roleDeptName);
+    const roleDeptId = selectedDept.id;
 
     await pool.query(
       `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`,
@@ -117,11 +117,13 @@ const addRole = async () => {
 // "Add an Employee"
 const addEmployee = async () => {
   try {
-    const [roles] = await pool.query(`SELECT * FROM role;`)
-    const roleTitle = roles.map(role => role.title)
+    const [roles] = await pool.query(`SELECT * FROM role;`);
+    const roleTitle = roles.map((role) => role.title);
 
-    const [managers] = await pool.query(`SELECT * FROM employee;`)
-    const managerName = managers.map(name => `${name.first_name} ${name.last_name}`)
+    const [managers] = await pool.query(`SELECT * FROM employee;`);
+    const managerName = managers.map(
+      (name) => `${name.first_name} ${name.last_name}`
+    );
 
     const employee = await inquirer.prompt([
       {
@@ -148,18 +150,31 @@ const addEmployee = async () => {
         name: "employeeRole",
         type: "list",
         message: "What is the employee's role?",
-        choices: [...roleTitle]
+        choices: [...roleTitle],
       },
       {
         name: "employeeManager",
         type: "list",
         message: "Who is the employee's manager?",
-        choices: [...managerName]
+        choices: [...managerName],
       },
     ]);
-    const { firstName, lastName, employeeRole, employeeManager } = employee
+    const { firstName, lastName, employeeRole, employeeManager } = employee;
 
+    const selectedRole = roles.find((role) => role.title === employeeRole);
+    const roleId = selectedRole.id;
 
+    const selectedManager = managers.find(
+      (manager) =>
+        `${manager.first_name} ${manager.last_name}` === employeeManager
+    );
+    const managerId = selectedManager.id;
+
+    await pool.query(
+      `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`,
+      [firstName, lastName, roleId, managerId]
+    );
+    return await viewEmployees();
   } catch (err) {
     console.log(err);
   }
@@ -175,12 +190,7 @@ const removeDepartment = async () => {
       name: "deptRemoved",
       type: "list",
       message: "Select a department to remove:",
-      choices: [...deptName],
-      validate: (id) => {
-        return id
-          ? true
-          : console.log("Please select a department to remove:", false);
-      },
+      choices: [...deptName]
     });
     const { deptRemoved } = dept;
 
@@ -190,6 +200,15 @@ const removeDepartment = async () => {
     console.log(err);
   }
 };
+
+// "Remove a role"
+const removeRole = async () => {
+    try {
+
+    } catch (err) {
+        console.log(err)
+    }
+}
 
 // "View total utilized budget of department"
 const viewBudget = async () => {
