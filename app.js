@@ -3,6 +3,7 @@ const inquirer = require("inquirer");
 const asciiArt = require("./src/ascii");
 const index = require("./src/index");
 
+// Start application with ASCII Art, followed by the main inquirer.js prompts
 const startTracker = () => {
   asciiArt()
   setTimeout(() => {
@@ -10,12 +11,14 @@ const startTracker = () => {
   }, 1550)
 }
 
+// Function for going back to the main prompts after 500 milliseconds
 const recallPrompt = () => {
   setTimeout(() => {
     promptInquirer()
   }, 500)
 }
 
+// Prompt inquirer.js using async-await
 const promptInquirer = async () => {
   try {  
     const data = await inquirer.prompt({
@@ -45,8 +48,10 @@ const promptInquirer = async () => {
       ]
     });
     
+    // Destructure key of main from object being returned
     const { main } = data;
     
+    // Switch statements for what functions to be called, in order to query from the database
     switch(main) {
       case "View All Departments":
         index.viewDepartments().then(recallPrompt)
@@ -61,6 +66,10 @@ const promptInquirer = async () => {
         index.addDepartment().then(recallPrompt)
         break;
       case "Add a role":
+        index.viewDepartments().then(index.viewRoles)
+        setTimeout(() => {
+          index.addRole().then(recallPrompt)
+        }, 500)
         break;
       case "Add an employee":
         break;
