@@ -76,6 +76,7 @@ const promptInquirer = async () => {
         index.removeDepartment().then(recallPrompt)
         break;
       case "Remove a role":
+        index.removeRole().then(recallPrompt)
         break;
       case "Remove an employee":
         break;

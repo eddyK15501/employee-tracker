@@ -204,7 +204,19 @@ const removeDepartment = async () => {
 // "Remove a role"
 const removeRole = async () => {
     try {
+        const [roles] = await pool.query(`SELECT * FROM role;`)
+        const roleTitle = roles.map(role => role.title)
+        
+        const role = await inquirer.prompt({
+            name: "roleRemoved",
+            type: "list",
+            message: "Select a role to remove:",
+            choices: [...roleTitle]
+        });
+        const { roleRemoved } = role;
 
+        await pool.query(`DELETE FROM role WHERE title = ?`, [roleRemoved]);
+        return await viewRoles();
     } catch (err) {
         console.log(err)
     }
@@ -231,5 +243,6 @@ module.exports = {
   addRole,
   addEmployee,
   removeDepartment,
+  removeRole,
   viewBudget,
 };
