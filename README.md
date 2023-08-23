@@ -10,7 +10,7 @@ Node.js content management systems application that views and manages employees 
 ## Usage
 * #### Clone the repository
 
-<img width="350px" src="https://user-images.githubusercontent.com/88423414/262820005-d9343b70-19b8-4a5f-b5e7-d838230ac3c1.png" />
+<img width="450px" src="https://user-images.githubusercontent.com/88423414/262820005-d9343b70-19b8-4a5f-b5e7-d838230ac3c1.png" />
 
 * #### Open up a terminal and change paths to the repository. Type in:
 
