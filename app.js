@@ -38,14 +38,9 @@ const promptInquirer = async () => {
         "Update an employee role",
         "View total utilized budget of department",
         "Quit",
-        /*
-          Extra Credit:
-          "Update employee managers"
-          "View employees by manager"
-          "View employees by department"
-          "Delete departments, roles, and employees"
-          "View total utilized budget of department (combined salaries of all employees in that department)"          
-        */
+        // Extra credit added:
+        // "Delete departments, roles, and employees"
+        // "View total utilized budget of department (combined salaries of all employees in that department)"
       ]
     });
     
@@ -82,14 +77,14 @@ const promptInquirer = async () => {
         index.removeEmployee().then(recallPrompt)
         break;
       case "Update an employee role":
+        index.updateRole().then(recallPrompt)
         break;
       case "View total utilized budget of department":
         index.viewBudget().then(recallPrompt)
         break;
       case "Quit":
-        console.log("Goodbye!")
+        console.log("Oh, thank god!")
         process.exit(0)
-        break;
     }
   } catch (err) {
     console.log(err)

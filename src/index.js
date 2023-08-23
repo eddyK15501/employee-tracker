@@ -58,7 +58,11 @@ const addDepartment = async () => {
     });
     const { deptAdded } = dept;
 
-    await pool.query(`INSERT INTO department (name) VALUES (?)`, [deptAdded]);
+    await pool.query(`
+        INSERT INTO department (name) 
+        VALUES (?)`,
+        [deptAdded]
+    );
     return viewDepartments();
   } catch (err) {
     console.log(err);
@@ -105,7 +109,8 @@ const addRole = async () => {
     const roleDeptId = selectedDept.id;
 
     await pool.query(
-      `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`,
+      `INSERT INTO role (title, salary, department_id) 
+      VALUES (?, ?, ?)`,
       [roleTitle, roleSalary, roleDeptId]
     );
     return await viewRoles();
@@ -171,7 +176,8 @@ const addEmployee = async () => {
     const managerId = selectedManager.id;
 
     await pool.query(
-      `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`,
+      `INSERT INTO employee (first_name, last_name, role_id, manager_id) 
+      VALUES (?, ?, ?, ?)`,
       [firstName, lastName, roleId, managerId]
     );
     return await viewEmployees();
@@ -190,7 +196,7 @@ const removeDepartment = async () => {
       name: "deptRemoved",
       type: "list",
       message: "Select a department to remove:",
-      choices: [...deptName]
+      choices: [...deptName],
     });
     const { deptRemoved } = dept;
 
@@ -203,45 +209,93 @@ const removeDepartment = async () => {
 
 // "Remove a role"
 const removeRole = async () => {
-    try {
-        const [roles] = await pool.query(`SELECT * FROM role;`);
-        const roleTitle = roles.map(role => role.title);
-        
-        const role = await inquirer.prompt({
-            name: "roleRemoved",
-            type: "list",
-            message: "Select a role to remove:",
-            choices: [...roleTitle]
-        });
-        const { roleRemoved } = role;
+  try {
+    const [roles] = await pool.query(`SELECT * FROM role;`);
+    const roleTitle = roles.map((role) => role.title);
 
-        await pool.query(`DELETE FROM role WHERE title = ?`, [roleRemoved]);
-        return await viewRoles();
-    } catch (err) {
-        console.log(err)
-    }
-}
+    const role = await inquirer.prompt({
+      name: "roleRemoved",
+      type: "list",
+      message: "Select a role to remove:",
+      choices: [...roleTitle],
+    });
+    const { roleRemoved } = role;
+
+    await pool.query(`DELETE FROM role WHERE title = ?`, [roleRemoved]);
+    return await viewRoles();
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 // "Remove an employee"
 const removeEmployee = async () => {
-    try {
-        const [employees] = await pool.query(`SELECT * FROM employee;`);
-        const employeeName = employees.map(employee => `${employee.first_name} ${employee.last_name}`)
-         
-        const employee = await inquirer.prompt({
-            name: "employeeRemoved",
-            type: "list",
-            message: "Select an employee to remove:",
-            choices: [...employeeName]
-        });
-        const { employeeRemoved } = employee;
+  try {
+    const [employees] = await pool.query(`SELECT * FROM employee;`);
+    const employeeName = employees.map(
+      (employee) => `${employee.first_name} ${employee.last_name}`
+    );
 
-        await pool.query(`DELETE FROM employee WHERE CONCAT(first_name, ' ', last_name) = ?`, [employeeRemoved])
-        return await viewEmployees();
-    } catch (err) {
-        console.log(err)
-    }
-}
+    const employee = await inquirer.prompt({
+      name: "employeeRemoved",
+      type: "list",
+      message: "Select an employee to remove:",
+      choices: [...employeeName],
+    });
+    const { employeeRemoved } = employee;
+
+    await pool.query(
+      `DELETE FROM employee 
+      WHERE CONCAT(first_name, ' ', last_name) = ?`,
+      [employeeRemoved]
+    );
+    return await viewEmployees();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// "Update an employee role"
+const updateRole = async () => {
+  try {
+    const [employeeNames] = await pool.query(`SELECT * FROM employee;`)
+    const selectEmployee = employeeNames.map(names => `${names.first_name} ${names.last_name}`)
+
+    const [employeeRoles] = await pool.query(`SELECT * FROM role;`)
+    const selectRole = employeeRoles.map(role => role.title)
+
+    const data = await inquirer.prompt([
+      {
+        name: "updateEmployee",
+        type: "list",
+        message: "Which employee's role do you want to update?",
+        choices: [...selectEmployee],
+      },
+      {
+        name: "updateRole",
+        type: "list",
+        message: "Which role do you want to assign to the selected employee?",
+        choices: [...selectRole],
+      },
+    ]);
+    const { updateEmployee, updateRole } = data
+
+    const updateRoleId = employeeRoles.find(role => role.title === updateRole)
+    const { id } = updateRoleId
+
+    await pool.query(`
+        UPDATE employee AS e
+        SET e.role_id = ?
+        WHERE CONCAT(e.first_name, ' ', e.last_name) = ?
+        `, [id, updateEmployee]
+    );
+
+    const [results] = await pool.query(`SELECT * FROM employee JOIN role ON employee.role_id = role.id;`)
+    console.table(results)
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 // "View total utilized budget of department"
 const viewBudget = async () => {
@@ -266,5 +320,6 @@ module.exports = {
   removeDepartment,
   removeRole,
   removeEmployee,
+  updateRole,
   viewBudget,
 };
