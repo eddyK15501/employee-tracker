@@ -26,7 +26,7 @@ SOURCE ./sql/schema.sql;
 SOURCE ./sql/seeds.sql;
 ```
 
-<img width="650px" src="https://user-images.githubusercontent.com/88423414/262821763-c4e950e8-fc45-41e4-8571-667b007b95b4.png" />
+<img width="750px" src="https://user-images.githubusercontent.com/88423414/262821763-c4e950e8-fc45-41e4-8571-667b007b95b4.png" />
 
 * #### Start the application from the terminal with:
 
@@ -34,11 +34,11 @@ SOURCE ./sql/seeds.sql;
 npm run start
 ```
 
-<img width="700px" src="https://user-images.githubusercontent.com/88423414/262821398-83be2356-8c5b-4da4-bfed-3abb97c1af13.png" />
+<img src="https://user-images.githubusercontent.com/88423414/262821398-83be2356-8c5b-4da4-bfed-3abb97c1af13.png" />
 
 <br>
 
-<img width="800px" src="https://user-images.githubusercontent.com/88423414/262821439-783e16ce-a785-488e-9808-333ff8d9e4b7.png" />
+<img src="https://user-images.githubusercontent.com/88423414/262821439-783e16ce-a785-488e-9808-333ff8d9e4b7.png" />
 
 ## Credits
 * To my persistent classmates at the UNC coding bootcamp.
