@@ -40,11 +40,9 @@ const viewEmployees = async () => {
     SELECT  e.id,
             e.first_name,
             e.last_name,
-            e.role_id,
             e.manager_id,
             r.title,
             r.salary,
-            r.department_id,
             d.name
     FROM employee e
     JOIN role r ON e.role_id = r.id
@@ -295,11 +293,26 @@ const removeEmployee = async () => {
       const changeManager = employees.filter(
         (e) => e.manager_id == checkEmployee.id
       );
-
       const updateManager = changeManager.map(
         (name) => `${name.first_name} ${name.last_name}`
       );
-
+      updateManager.forEach(async (name) => {
+        await pool.query(
+          `
+            UPDATE employee
+            SET manager_id = NULL
+            WHERE CONCAT(first_name, ' ', last_name) = ?;
+          `,
+          [name]
+        );
+      });
+    } else {
+      const changeManager = employees.filter(
+        (e) => e.manager_id == checkEmployee.id
+      );
+      const updateManager = changeManager.map(
+        (name) => `${name.first_name} ${name.last_name}`
+      );
       updateManager.forEach(async (name) => {
         await pool.query(
           `
@@ -426,12 +439,58 @@ const updateManager = async () => {
         [id, selectedEmployee]
       );
     }
-    
+
     return await viewEmployees();
   } catch (err) {
     console.log(err);
   }
 };
+
+// "View employees by manager"
+const viewByManager = async () => {
+  try {
+    const [result] = await pool.query(`
+      SELECT
+        CONCAT(m.first_name, ' ', m.last_name) AS manager_name,
+        GROUP_CONCAT(CONCAT(e.first_name, ' ', e.last_name)) AS employee_names
+      FROM
+        employee e
+      JOIN
+        employee m ON e.manager_id = m.id
+      GROUP BY
+        m.id
+      ORDER BY
+        m.id;
+    `);
+    console.table(result)
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// "View employees by department"
+const viewByDepartment = async () => {
+  try {
+    const [result] = await pool.query(`
+      SELECT
+        d.name AS department,
+        GROUP_CONCAT(CONCAT(e.first_name, ' ', e.last_name)) AS employee_name
+      FROM
+        department d
+      JOIN
+        role r ON d.id = r.department_id
+      JOIN
+        employee e ON r.id = e.role_id
+      GROUP BY
+        d.id
+      ORDER BY
+        d.id;
+    `)
+    console.table(result)
+  } catch (err) {
+    console.log(err)
+  }
+}
 
 // "View total utilized budget of department"
 const viewBudget = async () => {
@@ -458,5 +517,7 @@ module.exports = {
   removeRole,
   removeEmployee,
   updateRole,
+  viewByManager,
+  viewByDepartment,
   viewBudget,
 };
