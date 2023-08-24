@@ -15,12 +15,13 @@ VALUES  ("Software Engineer", 120000.00, 1),
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES  ("Tai", "MaiShu", 1, NULL), 
         ("Mike", "Rotch", 5, NULL),
-        ("Anita", "Bath", 2, NULL), 
-        ("Ben", "Dover", 4, 3), 
         ("Stan", "Still", 3, NULL), 
-        ("Hugh", "Jass", 3, 6), 
-        ("Eileen", "Dover", 2, 4), 
+        ("Anita", "Bath", 2, NULL), 
+        ("Tess", "Tickle", 4, NULL);
+
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES  ("Ben", "Dover", 1, 1), 
+        ("Hugh", "Jass", 3, 3), 
+        ("Eileen", "Dover", 1, 1), 
         ("Harry", "P.Ness", 5, 2), 
-        ("Tess", "Tickle", 4, NULL), 
-        ("Al", "Beback", 1, 1);
-        -- ("Dontayt", "Fool", 1, 2);
+        ("Al", "Beback", 4, 5);
