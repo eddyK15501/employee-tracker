@@ -100,7 +100,7 @@ const promptInquirer = async () => {
         index.viewBudget().then(recallPrompt);
         break;
       case "Quit":
-        console.log("My god...Spare me the headache next time & avoid returning");
+        console.log("Spare me the headache. Avoid returning.");
         process.exit(0);
     }
   } catch (err) {

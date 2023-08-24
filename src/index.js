@@ -85,7 +85,7 @@ const addDepartment = async () => {
 const addRole = async () => {
   try {
     const [departments] = await pool.query(`SELECT * FROM department;`);
-    const deptName = departments.map((dept) => dept.name);
+    const deptName = departments.map((dept) => dept.name).filter(arr => arr != null);
 
     const role = await inquirer.prompt([
       {
@@ -135,7 +135,7 @@ const addRole = async () => {
 const addEmployee = async () => {
   try {
     const [roles] = await pool.query(`SELECT * FROM role;`);
-    const roleTitle = roles.map((role) => role.title);
+    const roleTitle = roles.map((role) => role.title).filter(arr => arr != null);
 
     const [managers] = await pool.query(`SELECT * FROM employee;`);
     const managerName = managers.map(
