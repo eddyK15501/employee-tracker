@@ -296,9 +296,11 @@ const removeEmployee = async () => {
         (e) => e.manager_id == checkEmployee.id
       );
 
-      const updateManager = changeManager.map(name => `${name.first_name} ${name.last_name}`)
+      const updateManager = changeManager.map(
+        (name) => `${name.first_name} ${name.last_name}`
+      );
 
-      updateManager.forEach(async name => {
+      updateManager.forEach(async (name) => {
         await pool.query(
           `
             UPDATE employee
@@ -307,7 +309,7 @@ const removeEmployee = async () => {
           `,
           [name]
         );
-      })
+      });
     }
 
     await pool.query(
@@ -376,6 +378,61 @@ const updateRole = async () => {
   }
 };
 
+// "Update employee manager"
+const updateManager = async () => {
+  try {
+    const [employees] = await pool.query(`SELECT * FROM employee;`);
+    const employeeNames = employees.map(
+      (e) => `${e.first_name} ${e.last_name}`
+    );
+
+    const data = await inquirer.prompt([
+      {
+        name: "selectedEmployee",
+        type: "list",
+        message:
+          "Select the employee who will be reassigned a different manager:",
+        choices: [...employeeNames],
+      },
+      {
+        name: "managerSelected",
+        type: "list",
+        message: "Reassign this employee's manager to:",
+        choices: [...employeeNames, "NULL"],
+      },
+    ]);
+    const { selectedEmployee, managerSelected } = data;
+
+    if (managerSelected === "NULL") {
+      await pool.query(
+        `
+      UPDATE employee AS e
+      SET e.manager_id = NULL
+      WHERE CONCAT(e.first_name, ' ', e.last_name) = ?
+      `,
+        [selectedEmployee]
+      );
+    } else {
+      const { id } = employees.find(
+        (e) => `${e.first_name} ${e.last_name}` === managerSelected
+      );
+
+      await pool.query(
+        `
+        UPDATE employee AS e
+        SET e.manager_id = ?
+        WHERE CONCAT(e.first_name, ' ', e.last_name) = ?
+        `,
+        [id, selectedEmployee]
+      );
+    }
+    
+    return await viewEmployees();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // "View total utilized budget of department"
 const viewBudget = async () => {
   const query = `
@@ -396,6 +453,7 @@ module.exports = {
   addDepartment,
   addRole,
   addEmployee,
+  updateManager,
   removeDepartment,
   removeRole,
   removeEmployee,
