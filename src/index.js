@@ -186,80 +186,80 @@ const addEmployee = async () => {
   }
 };
 
-// "Remove a department"
-const removeDepartment = async () => {
-  try {
-    const [departments] = await pool.query(`SELECT * FROM department;`);
-    const deptName = departments.map((dept) => dept.name);
-
-    const dept = await inquirer.prompt({
-      name: "deptRemoved",
-      type: "list",
-      message: "Select a department to remove:",
-      choices: [...deptName],
-    });
-    const { deptRemoved } = dept;
-
-    await pool.query(`
-      DELETE FROM department WHERE name = ?;
-    `, [deptRemoved]);
-
-    return await viewDepartments();
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-// "Remove a role"
-const removeRole = async () => {
-  try {
-    const [roles] = await pool.query(`SELECT * FROM role;`);
-    const roleTitle = roles.map((role) => role.title);
-
-    const role = await inquirer.prompt({
-      name: "roleRemoved",
-      type: "list",
-      message: "Select a role to remove:",
-      choices: [...roleTitle],
-    });
-    const { roleRemoved } = role;
-
-    await pool.query(`
-      DELETE FROM role WHERE title = ?;
-    `, [roleRemoved]);
-
-    return await viewRoles();
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 // "Remove an employee"
 const removeEmployee = async () => {
   try {
     const [employees] = await pool.query(`SELECT * FROM employee;`);
     const employeeName = employees.map(
       (employee) => `${employee.first_name} ${employee.last_name}`
-    );
-
-    const employee = await inquirer.prompt({
-      name: "employeeRemoved",
-      type: "list",
-      message: "Select an employee to remove:",
-      choices: [...employeeName],
-    });
-    const { employeeRemoved } = employee;
-
-    await pool.query(`
+      );
+      
+      const employee = await inquirer.prompt({
+        name: "employeeRemoved",
+        type: "list",
+        message: "Select an employee to remove:",
+        choices: [...employeeName],
+      });
+      const { employeeRemoved } = employee;
+      
+      await pool.query(`
       DELETE FROM employee 
       WHERE CONCAT(first_name, ' ', last_name) = ?;
-    `, [employeeRemoved]);
-
-    return await viewEmployees();
-  } catch (err) {
-    console.log(err);
-  }
-};
+      `, [employeeRemoved]);
+      
+      return await viewEmployees();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+  // "Remove a role"
+  const removeRole = async () => {
+    try {
+      const [roles] = await pool.query(`SELECT * FROM role;`);
+      const roleTitle = roles.map((role) => role.title);
+      
+      const role = await inquirer.prompt({
+        name: "roleRemoved",
+        type: "list",
+        message: "Select a role to remove:",
+        choices: [...roleTitle],
+      });
+      const { roleRemoved } = role;
+      
+      await pool.query(`
+      DELETE FROM role WHERE title = ?;
+      `, [roleRemoved]);
+      
+      return await viewRoles();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+  // "Remove a department"
+  const removeDepartment = async () => {
+    try {
+      const [departments] = await pool.query(`SELECT * FROM department;`);
+      const deptName = departments.map((dept) => dept.name);
+  
+      const dept = await inquirer.prompt({
+        name: "deptRemoved",
+        type: "list",
+        message: "Select a department to remove:",
+        choices: [...deptName],
+      });
+      const { deptRemoved } = dept;
+  
+      await pool.query(`
+        DELETE FROM department WHERE name = ?;
+      `, [deptRemoved]);
+      
+      return await viewDepartments();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
 // "Update an employee role"
 const updateRole = async () => {
