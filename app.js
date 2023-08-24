@@ -5,22 +5,22 @@ const index = require("./src/index");
 
 // Start application with ASCII Art, followed by the main inquirer.js prompts
 const startTracker = () => {
-  asciiArt()
+  asciiArt();
   setTimeout(() => {
-    promptInquirer()
-  }, 1550)
-}
+    promptInquirer();
+  }, 1550);
+};
 
 // Function for going back to the main prompts after 500 milliseconds
 const recallPrompt = () => {
   setTimeout(() => {
-    promptInquirer()
-  }, 500)
-}
+    promptInquirer();
+  }, 500);
+};
 
 // Prompt inquirer.js using async-await
 const promptInquirer = async () => {
-  try {  
+  try {
     const data = await inquirer.prompt({
       name: "main",
       message: "What would you like to do?",
@@ -41,56 +41,56 @@ const promptInquirer = async () => {
         // Extra credit added:
         // "Delete departments, roles, and employees"
         // "View total utilized budget of department (combined salaries of all employees in that department)"
-      ]
+      ],
     });
-    
+
     // Destructure key of main from object being returned
     const { main } = data;
-    
+
     // Switch statements for what functions to be called, in order to query from the database
-    switch(main) {
+    switch (main) {
       case "View All Departments":
-        index.viewDepartments().then(recallPrompt)
+        index.viewDepartments().then(recallPrompt);
         break;
       case "View All Roles":
-        index.viewRoles().then(recallPrompt)
+        index.viewRoles().then(recallPrompt);
         break;
       case "View All Employees":
-        index.viewEmployees().then(recallPrompt)
+        index.viewEmployees().then(recallPrompt);
         break;
       case "Add a department":
-        index.addDepartment().then(recallPrompt)
+        index.addDepartment().then(recallPrompt);
         break;
       case "Add a role":
-        index.addRole().then(recallPrompt)
+        index.addRole().then(recallPrompt);
         break;
       case "Add an employee":
-        index.addEmployee().then(recallPrompt)
-        break;
-      case "Remove a department":
-        index.removeDepartment().then(recallPrompt)
-        break;
-      case "Remove a role":
-        index.removeRole().then(recallPrompt)
+        index.addEmployee().then(recallPrompt);
         break;
       case "Remove an employee":
-        index.removeEmployee().then(recallPrompt)
+        index.removeEmployee().then(recallPrompt);
+        break;
+      case "Remove a role":
+        index.removeRole().then(recallPrompt);
+        break;
+      case "Remove a department":
+        index.removeDepartment().then(recallPrompt);
         break;
       case "Update an employee role":
-        index.updateRole().then(recallPrompt)
+        index.updateRole().then(recallPrompt);
         break;
       case "View total utilized budget of department":
-        index.viewBudget().then(recallPrompt)
+        index.viewBudget().then(recallPrompt);
         break;
       case "Quit":
-        console.log("Oh, thank god!")
-        process.exit(0)
+        console.log("Oh, thank god!");
+        process.exit(0);
     }
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
-}
+};
 
-startTracker()
+startTracker();
 
-module.exports = recallPrompt
+module.exports = recallPrompt;

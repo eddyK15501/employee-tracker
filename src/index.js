@@ -200,7 +200,10 @@ const removeDepartment = async () => {
     });
     const { deptRemoved } = dept;
 
-    await pool.query(`DELETE FROM department WHERE name = ?`, [deptRemoved]);
+    await pool.query(`
+      DELETE FROM department WHERE name = ?;
+    `, [deptRemoved]);
+
     return await viewDepartments();
   } catch (err) {
     console.log(err);
@@ -221,7 +224,10 @@ const removeRole = async () => {
     });
     const { roleRemoved } = role;
 
-    await pool.query(`DELETE FROM role WHERE title = ?`, [roleRemoved]);
+    await pool.query(`
+      DELETE FROM role WHERE title = ?;
+    `, [roleRemoved]);
+
     return await viewRoles();
   } catch (err) {
     console.log(err);
@@ -244,11 +250,11 @@ const removeEmployee = async () => {
     });
     const { employeeRemoved } = employee;
 
-    await pool.query(
-      `DELETE FROM employee 
-      WHERE CONCAT(first_name, ' ', last_name) = ?`,
-      [employeeRemoved]
-    );
+    await pool.query(`
+      DELETE FROM employee 
+      WHERE CONCAT(first_name, ' ', last_name) = ?;
+    `, [employeeRemoved]);
+
     return await viewEmployees();
   } catch (err) {
     console.log(err);
