@@ -32,9 +32,9 @@ const promptInquirer = async () => {
         "Add a department",
         "Add a role",
         "Add an employee",
-        "Remove an employee",
-        "Remove a role",
         "Remove a department",
+        "Remove a role",
+        "Remove an employee",
         "Update an employee role",
         "View total utilized budget of department",
         "Quit",
@@ -67,14 +67,14 @@ const promptInquirer = async () => {
       case "Add an employee":
         index.addEmployee().then(recallPrompt);
         break;
-      case "Remove an employee":
-        index.removeEmployee().then(recallPrompt);
+      case "Remove a department":
+        index.removeDepartment().then(recallPrompt);
         break;
       case "Remove a role":
         index.removeRole().then(recallPrompt);
         break;
-      case "Remove a department":
-        index.removeDepartment().then(recallPrompt);
+      case "Remove an employee":
+        index.removeEmployee().then(recallPrompt);
         break;
       case "Update an employee role":
         index.updateRole().then(recallPrompt);
