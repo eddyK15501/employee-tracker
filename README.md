@@ -3,7 +3,7 @@
 ## Description
 Node.js content management systems application that views and manages employees in a company, by interacting with a database from the command line, using MySQL and Inquirer.js. 
 ## Video Demonstration of Application
-
+* [Click Here](https://github.com/eddyK15501/employee-tracker/issues/2#issue-1866199401)
 ## Installation
 * Required: LTS or latest version of Node.js
 * Required: LTS or latest version of MySQL
