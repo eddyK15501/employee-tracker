@@ -481,11 +481,14 @@ const viewByDepartment = async () => {
         role r ON d.id = r.department_id
       JOIN
         employee e ON r.id = e.role_id
+      WHERE
+        d.name IS NOT NULL
       GROUP BY
         d.id
       ORDER BY
         d.id;
     `)
+
     console.table(result)
   } catch (err) {
     console.log(err)
@@ -495,12 +498,13 @@ const viewByDepartment = async () => {
 // "View total utilized budget of department"
 const viewBudget = async () => {
   const query = `
-    SELECT d.name AS department_name, SUM(r.salary) AS total_salary
+    SELECT d.name AS department_name, COALESCE(SUM(r.salary), 0) AS total_salary
     FROM department d
     JOIN role r ON d.id = r.department_id
     JOIN employee e ON r.id = e.role_id
-    GROUP BY d.name;`;
-
+    WHERE d.name IS NOT NULL
+    GROUP BY d.name;
+  `;
   const [result] = await pool.query(query);
   console.table(result);
 };
